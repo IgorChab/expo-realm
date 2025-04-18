@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Dimensions, Pressable} from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Link } from 'expo-router';
 import DecorativeSvg from '@/assets/svg/decorative.svg';
 import ArrowIcon from '@/assets/svg/arrowIcon.svg';

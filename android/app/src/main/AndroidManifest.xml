@@ -26,7 +26,6 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
         <data android:scheme="com.anonymous.exporealm"/>
-        <data android:scheme="exp+expo-realm"/>
       </intent-filter>
     </activity>
   </application>
