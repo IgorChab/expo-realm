@@ -1,0 +1,154 @@
+import React from "react";
+import {View, Text, StyleSheet, Pressable} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export default function HomeScreen() {
+  return (
+    <SafeAreaView style={styles.root}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Home</Text>
+        <View style={styles.avatar} />
+      </View>
+      <View style={styles.tabSection}>
+        <Pressable style={styles.tab}>
+          <Text style={styles.tabText}>Task List</Text>
+        </Pressable>
+        <Pressable style={styles.tab}>
+          <Text style={styles.tabText}>Completed</Text>
+        </Pressable>
+      </View>
+      <View style={styles.categoriesSection}>
+        <View style={styles.categoriesHeader}>
+          <Text style={styles.categoriesTitle}>Categories</Text>
+          <Pressable style={styles.addCategoryBtn}>
+            <Text style={styles.addCategoryText}>Add</Text>
+          </Pressable>
+        </View>
+        <View>
+          <Text>Categories will be here</Text>
+        </View>
+      </View>
+      <View style={styles.taskListSection}>
+        <View style={styles.taskListHeader}>
+          <Text style={styles.taskListTitle}>Task List</Text>
+          <Pressable style={styles.addTaskBtn}>
+            <Text style={styles.addTaskText}>Add Task</Text>
+          </Pressable>
+        </View>
+        <View>
+          <Text>TaskList will be here</Text>
+        </View>
+      </View>
+    </SafeAreaView>
+  )
+}
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    marginBottom: 12,
+  },
+  headerTitle: {
+    fontFamily: 'Helvetica',
+    fontWeight: '700',
+    fontSize: 20,
+  },
+  avatar: {
+    width: 31,
+    height: 31,
+    borderRadius: 30,
+    backgroundColor: '#E3E6FF'
+  },
+  tabSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    marginHorizontal: 24,
+    height: 60,
+    backgroundColor: '#242424',
+    borderRadius: 100,
+    padding: 8,
+    gap: 20,
+    color: '#FFFFFF',
+    marginBottom: 21,
+  },
+  tab: {
+    width: 145,
+    height: 43,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+  tabText: {
+    fontFamily: 'Helvetica',
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  categoriesSection: {
+    paddingHorizontal: 20,
+  },
+  categoriesHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+  },
+  categoriesTitle: {
+    fontFamily: 'Helvetica',
+    fontWeight: '700',
+    fontSize: 18,
+  },
+  addCategoryBtn: {
+    backgroundColor: '#242424',
+    borderRadius: 26,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  addCategoryText: {
+    fontFamily: 'Helvetica',
+    fontWeight: '700',
+    fontSize: 13,
+    color: '#FFFFFF',
+  },
+  taskListSection: {
+    flex: 1,
+    backgroundColor: '#FAFAFA',
+    borderTopLeftRadius: 45,
+    borderTopRightRadius: 45,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    marginTop: 20,
+  },
+  taskListHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  taskListTitle: {
+    fontFamily: 'Helvetica',
+    fontWeight: '700',
+    fontSize: 18,
+  },
+  addTaskBtn: {
+    backgroundColor: '#242424',
+    borderRadius: 100,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+  },
+  addTaskText: {
+    fontFamily: 'Helvetica',
+    fontWeight: '700',
+    fontSize: 12,
+    color: '#FFFFFF',
+  }
+})
