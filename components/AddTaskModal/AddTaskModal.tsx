@@ -27,7 +27,6 @@ export const AddTaskModal = ({ setIsVisible, ...props }: AddTaskModalProps) => {
         value={text}
         onChangeText={setText}
         style={styles.input}
-        autoFocus
         cursorColor='#757575'
         selectionColor='#757575'
       />

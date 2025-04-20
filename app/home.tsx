@@ -1,14 +1,29 @@
 import React, { useState } from "react";
-import {View, Text, StyleSheet, Pressable, ScrollView} from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useQuery } from "@realm/react";
+import {useQuery, useRealm} from "@realm/react";
 import { Task } from "@/realm";
-import {AddCategoryModal, AddTaskModal, Button, CategoryItem} from "@/components";
+import { AddCategoryModal, AddTaskModal, Button, CategoryItem, TaskItem } from "@/components";
 
 export default function HomeScreen() {
   const [isVisibleAddTaskModal, setVisibleAddTaskModal] = useState(false);
   const [isVisibleAddCategoryModal, setIsVisibleAddCategoryModal] = useState(false);
+  const realm = useRealm();
   const tasks = useQuery(Task);
+  
+  const handleTaskComplete = (task: Task) => {
+    realm.write(() => {
+      task.isCompleted = !task.isCompleted
+    })
+  }
+  
+  const completeAllTasks = () => {
+    realm.write(() => {
+      for (const task of tasks) {
+        task.isCompleted = true
+      }
+    })
+  }
 
   return (
     <SafeAreaView style={styles.root}>
@@ -40,11 +55,17 @@ export default function HomeScreen() {
           <Text style={styles.taskListTitle}>Task List</Text>
           <Button title="Add Task" size="medium" onPress={() => setVisibleAddTaskModal(true)} />
         </View>
-        <View>
+        <View style={styles.divider} />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ paddingHorizontal: 20 }}
+          contentContainerStyle={{ gap: 16, paddingBottom: 20 }}
+        >
           {tasks.map((task) => (
-            <Text key={task.id}>{JSON.stringify(task)}</Text>
+            <TaskItem task={task} key={task.id} handleTaskComplete={handleTaskComplete} />
           ))}
-        </View>
+        </ScrollView>
+        <Button title='Select All Task' size='medium' onPress={completeAllTasks} style={styles.selectAllBtn} />
       </View>
       <AddTaskModal isVisible={isVisibleAddTaskModal} setIsVisible={setVisibleAddTaskModal} />
       <AddCategoryModal isVisible={isVisibleAddCategoryModal} setIsVisible={setIsVisibleAddCategoryModal} />
@@ -127,17 +148,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFAFA',
     borderTopLeftRadius: 45,
     borderTopRightRadius: 45,
-    paddingHorizontal: 20,
     paddingTop: 18,
   },
   taskListHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
   taskListTitle: {
     fontFamily: 'Helvetica',
     fontWeight: '700',
     fontSize: 18,
   },
+  divider: {
+    height: 1,
+    backgroundColor: '#EAEAEA',
+    marginTop: 16,
+    marginBottom: 24,
+  },
+  selectAllBtn: {
+    marginTop: 10,
+    marginBottom: 16,
+    alignSelf: 'center',
+  }
 })

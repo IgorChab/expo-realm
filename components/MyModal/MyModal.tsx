@@ -13,7 +13,7 @@ export const MyModal = ({ children, setIsVisible, ...props }: MyModalProps) => {
   }
   
   return (
-    <Modal onBackdropPress={closeModal} {...props}>
+    <Modal statusBarTranslucent onBackdropPress={closeModal} {...props}>
       <View style={styles.container}>
         <View style={styles.header}>
           <AntDesign name='close' size={24} color='#242424' style={styles.closeButton} onPress={closeModal} />
