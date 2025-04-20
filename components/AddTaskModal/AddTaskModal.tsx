@@ -13,9 +13,10 @@ export const AddTaskModal = ({ setIsVisible, ...props }: AddTaskModalProps) => {
   
   const handleAddTask = () => {
     realm.write(() => {
-      realm.create('Task', { id: new Realm.BSON.UUID(), text: '', isCompleted: false });
+      realm.create('Task', { id: new Realm.BSON.UUID(), text, isCompleted: false });
     });
     setIsVisible(false);
+    setText('')
   };
   
   return (
@@ -26,6 +27,7 @@ export const AddTaskModal = ({ setIsVisible, ...props }: AddTaskModalProps) => {
         value={text}
         onChangeText={setText}
         style={styles.input}
+        autoFocus
         cursorColor='#757575'
         selectionColor='#757575'
       />

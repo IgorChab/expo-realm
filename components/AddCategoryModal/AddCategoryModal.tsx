@@ -48,7 +48,11 @@ export const AddCategoryModal = (props: AddCategoryModalProps) => {
       />
       <View style={styles.iconsContainer}>
         {iconsList.map((icon) => (
-          <Pressable style={[styles.iconWrapper, selectedImage === icon && styles.selectedIcon]} onPress={() => setSelectedImage(icon)}>
+          <Pressable
+            key={icon}
+            style={[styles.iconWrapper, selectedImage === icon && styles.selectedIcon]}
+            onPress={() => setSelectedImage(icon)}
+          >
             <FontAwesome name={icon} size={24} color={selectedImage === icon && styles.selectedIcon ? 'white' : "#242424"} />
           </Pressable>
         ))}
