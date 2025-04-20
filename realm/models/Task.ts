@@ -1,7 +1,7 @@
 import { ObjectSchema, Realm } from "realm";
 
 export class Task extends Realm.Object {
-  id!: string;
+  id!: Realm.BSON.UUID;
   text!: string;
   isCompleted!: boolean;
   

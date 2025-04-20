@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {useQuery, useRealm} from "@realm/react";
-import { Task } from "@/realm";
+import { useQuery, useRealm } from "@realm/react";
+import { Category, Task } from "@/realm";
 import { AddCategoryModal, AddTaskModal, Button, CategoryItem, TaskItem } from "@/components";
 
 export default function HomeScreen() {
   const [isVisibleAddTaskModal, setVisibleAddTaskModal] = useState(false);
   const [isVisibleAddCategoryModal, setIsVisibleAddCategoryModal] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>();
   const realm = useRealm();
   const tasks = useQuery(Task);
+  const categories = useQuery(Category);
   
   const handleTaskComplete = (task: Task) => {
     realm.write(() => {
@@ -23,6 +25,10 @@ export default function HomeScreen() {
         task.isCompleted = true
       }
     })
+  }
+  
+  const selectCategory = (category: Category) => {
+    setSelectedCategoryId(category.id.toString())
   }
 
   return (
@@ -44,10 +50,19 @@ export default function HomeScreen() {
           <Text style={styles.categoriesTitle}>Categories</Text>
           <Button title="Add" size="small" onPress={() => setIsVisibleAddCategoryModal(true)} />
         </View>
-        <ScrollView horizontal style={styles.categoriesContainer} contentContainerStyle={styles.contentContainerStyle}>
-          <CategoryItem title='Work' icon='briefcase' color='#FFE600' />
-          <CategoryItem title='Sport' icon='heart' color='#52D22E' />
-          <CategoryItem title='Habits' icon='star' color='#6270F0' />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.contentContainerStyle}
+        >
+          {categories.map((category) => (
+            <CategoryItem
+              key={category.id.toString()}
+              category={category}
+              selectCategory={selectCategory}
+              selected={selectedCategoryId === category.id.toString()}
+            />
+          ))}
         </ScrollView>
       </View>
       <View style={styles.taskListSection}>
@@ -62,10 +77,12 @@ export default function HomeScreen() {
           contentContainerStyle={{ gap: 16, paddingBottom: 20 }}
         >
           {tasks.map((task) => (
-            <TaskItem task={task} key={task.id} handleTaskComplete={handleTaskComplete} />
+            <TaskItem task={task} key={task.id.toString()} handleTaskComplete={handleTaskComplete} />
           ))}
         </ScrollView>
-        <Button title='Select All Task' size='medium' onPress={completeAllTasks} style={styles.selectAllBtn} />
+        {!tasks.isEmpty() && (
+          <Button title='Select All Task' size='medium' onPress={completeAllTasks} style={styles.selectAllBtn} />
+        )}
       </View>
       <AddTaskModal isVisible={isVisibleAddTaskModal} setIsVisible={setVisibleAddTaskModal} />
       <AddCategoryModal isVisible={isVisibleAddCategoryModal} setIsVisible={setIsVisibleAddCategoryModal} />
@@ -135,13 +152,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 18,
   },
-  categoriesContainer: {
-    paddingHorizontal: 20,
-  },
   contentContainerStyle: {
     gap: 16,
     paddingTop: 30,
-    paddingBottom: 20
+    paddingBottom: 20,
+    paddingHorizontal: 20,
   },
   taskListSection: {
     flex: 1,

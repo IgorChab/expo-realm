@@ -4,16 +4,34 @@ import {Text, TextInput, StyleSheet, View, Pressable} from "react-native";
 import { Button } from "../Button/Button";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { colorsList, iconsList } from "@/constants";
+import { useRealm } from "@realm/react";
+import { Realm } from "realm";
 
 interface AddCategoryModalProps extends MyModalProps {}
 
-export const AddCategoryModal = (props: AddCategoryModalProps) => {
+export const AddCategoryModal = ({ setIsVisible, ...props }: AddCategoryModalProps) => {
+  const realm = useRealm()
   const [categoryName, setCategoryName] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState('');
+  
+  const createCategory = () => {
+    realm.write(() => {
+      realm.create('Category', {
+        id: new Realm.BSON.UUID(),
+        color: selectedColor,
+        icon: selectedIcon,
+        title: categoryName,
+      });
+    })
+    setIsVisible(false);
+    setCategoryName('')
+    setSelectedColor('')
+    setSelectedIcon('')
+  }
   
   return (
-    <MyModal {...props}>
+    <MyModal setIsVisible={setIsVisible} {...props}>
       <Text style={styles.title}>Add Category</Text>
       <Text style={styles.label}>Name</Text>
       <TextInput
@@ -27,10 +45,10 @@ export const AddCategoryModal = (props: AddCategoryModalProps) => {
         {iconsList.map((icon) => (
           <Pressable
             key={icon}
-            style={[styles.iconWrapper, selectedImage === icon && styles.selectedIcon]}
-            onPress={() => setSelectedImage(icon)}
+            style={[styles.iconWrapper, selectedIcon === icon && styles.selectedIcon]}
+            onPress={() => setSelectedIcon(icon)}
           >
-            <FontAwesome name={icon} size={24} color={selectedImage === icon && styles.selectedIcon ? 'white' : "#242424"} />
+            <FontAwesome name={icon} size={24} color={selectedIcon === icon && styles.selectedIcon ? 'white' : "#242424"} />
           </Pressable>
         ))}
       </View>
@@ -43,7 +61,7 @@ export const AddCategoryModal = (props: AddCategoryModalProps) => {
           />
         ))}
       </View>
-      <Button title="Create Category" size="large" style={styles.button} />
+      <Button title="Create Category" size="large" style={styles.button} onPress={createCategory} />
     </MyModal>
   )
 }

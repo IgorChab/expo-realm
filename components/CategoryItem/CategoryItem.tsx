@@ -1,25 +1,41 @@
 import React from 'react';
 import { Pressable, View, StyleSheet, Text } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { IconName } from "@/constants";
 import { colorWithAlpha } from "@/helpers";
+import { Category } from "@/realm";
 
 interface CategoryItemProps {
-  title: string;
-  icon: IconName;
-  color: string;
+  category: Category;
   selected?: boolean;
+  selectCategory: (category: Category) => void
 }
 
-export const CategoryItem = ({ title, icon, color, selected }: CategoryItemProps) => {
+export const CategoryItem = ({ category, selected, selectCategory }: CategoryItemProps) => {
+  const { color, title, icon, tasks } = category
+  
+  const getTasksCountLabel = () => {
+    if (!tasks || tasks.length === 0) {
+      return `+0 tasks`
+    }
+    
+    if (tasks.length < 10) {
+      return `+$0${tasks.length} task`
+    }
+    
+    return `+$${tasks.length} task`
+  }
+  
   return (
-    <Pressable style={[styles.container, selected && styles.shadow, { shadowColor: color }]}>
-      <View style={[styles.innerContainer, { backgroundColor: colorWithAlpha(color, 0.1) }]}>
+    <Pressable
+      style={[styles.container, selected && styles.shadow, { shadowColor: color }]}
+      onPress={() => selectCategory(category)}
+    >
+      <View style={[styles.innerContainer, { backgroundColor: colorWithAlpha(color, 0.2) }]}>
         <View style={[styles.iconContainer, styles.shadowIcon, { borderColor: color, shadowColor: color }]}>
           <FontAwesome name={icon} size={24} color={color} />
         </View>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.tasksCount}>+03 task</Text>
+        <Text style={styles.tasksCount}>{getTasksCountLabel()}</Text>
         {selected && (
           <View style={[styles.bar, { backgroundColor: color } ]} />
         )}
