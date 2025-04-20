@@ -2,28 +2,39 @@ import React from 'react';
 import { Pressable, View, StyleSheet, Text } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { IconName } from "@/constants";
-import {colorWithAlpha} from "@/helpers";
+import { colorWithAlpha } from "@/helpers";
 
 interface CategoryItemProps {
   title: string;
   icon: IconName;
   color: string;
+  selected?: boolean;
 }
 
-export const CategoryItem = ({ title, icon, color }: CategoryItemProps) => {
+export const CategoryItem = ({ title, icon, color, selected }: CategoryItemProps) => {
   return (
-    <Pressable style={[styles.container, styles.shadow, { backgroundColor: colorWithAlpha(color, 0.5), shadowColor: color }]}>
-      <View style={[styles.iconContainer, { borderColor: color }]}>
-        <FontAwesome name={icon} size={24} color={color} />
+    <Pressable style={[styles.container, selected && styles.shadow, { shadowColor: color }]}>
+      <View style={[styles.innerContainer, { backgroundColor: colorWithAlpha(color, 0.1) }]}>
+        <View style={[styles.iconContainer, styles.shadowIcon, { borderColor: color, shadowColor: color }]}>
+          <FontAwesome name={icon} size={24} color={color} />
+        </View>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.tasksCount}>+03 task</Text>
+        {selected && (
+          <View style={[styles.bar, { backgroundColor: color } ]} />
+        )}
       </View>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.tasksCount}>+03 task</Text>
     </Pressable>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    borderRadius: 20,
+    borderTopRightRadius: 63,
+    backgroundColor: 'white',
+  },
+  innerContainer: {
     width: 112,
     height: 136,
     borderRadius: 20,
@@ -38,10 +49,20 @@ const styles = StyleSheet.create({
       width: 0,
       height: 7,
     },
-    shadowOpacity: 0.41,
-    shadowRadius: 9.11,
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
     
     elevation: 14,
+  },
+  shadowIcon: {
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    
+    elevation: 10,
   },
   iconContainer: {
     width: 51,
@@ -64,5 +85,14 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 13,
     color: '#757575',
-  }
+  },
+  bar: {
+    width: 71,
+    height: 5,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    alignSelf: 'center',
+    marginTop: 'auto',
+    bottom: -2,
+  },
 })
