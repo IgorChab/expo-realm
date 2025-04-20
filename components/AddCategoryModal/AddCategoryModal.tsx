@@ -3,32 +3,9 @@ import { MyModal, MyModalProps } from "../MyModal/MyModal";
 import {Text, TextInput, StyleSheet, View, Pressable} from "react-native";
 import { Button } from "../Button/Button";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { colorsList, iconsList } from "@/constants";
 
 interface AddCategoryModalProps extends MyModalProps {}
-
-const iconsList = [
-  'comment',
-  'briefcase',
-  'heart',
-  'bookmark',
-  'music',
-  'plane',
-  'lightbulb-o',
-  'star',
-  'home',
-  'shopping-cart'
-] as const;
-
-const colorsList = [
-  '#98E2C6',
-  '#FFE600',
-  '#6270F0',
-  '#52D22E',
-  '#008148',
-  '#E0607E',
-  '#EF8A17',
-  '#EF2917',
-] as const;
 
 export const AddCategoryModal = (props: AddCategoryModalProps) => {
   const [categoryName, setCategoryName] = useState('');

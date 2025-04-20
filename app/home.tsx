@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import {View, Text, StyleSheet, Pressable, ScrollView} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@realm/react";
 import { Task } from "@/realm";
-import { AddCategoryModal, AddTaskModal, Button } from "@/components";
+import {AddCategoryModal, AddTaskModal, Button, CategoryItem} from "@/components";
 
 export default function HomeScreen() {
   const [isVisibleAddTaskModal, setVisibleAddTaskModal] = useState(false);
@@ -24,14 +24,16 @@ export default function HomeScreen() {
           <Text style={styles.tabText}>Completed</Text>
         </Pressable>
       </View>
-      <View style={styles.categoriesSection}>
+      <View>
         <View style={styles.categoriesHeader}>
           <Text style={styles.categoriesTitle}>Categories</Text>
           <Button title="Add" size="small" onPress={() => setIsVisibleAddCategoryModal(true)} />
         </View>
-        <View>
-          <Text>Categories will be here</Text>
-        </View>
+        <ScrollView horizontal style={styles.categoriesContainer} contentContainerStyle={styles.contentContainerStyle}>
+          <CategoryItem title='Work' icon='briefcase' color='#FFE600' />
+          <CategoryItem title='Sport' icon='heart' color='#52D22E' />
+          <CategoryItem title='Habits' icon='star' color='#6270F0' />
+        </ScrollView>
       </View>
       <View style={styles.taskListSection}>
         <View style={styles.taskListHeader}>
@@ -101,19 +103,24 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 16,
   },
-  categoriesSection: {
-    paddingHorizontal: 20,
-  },
   categoriesHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    paddingHorizontal: 20,
   },
   categoriesTitle: {
     fontFamily: 'Helvetica',
     fontWeight: '700',
     fontSize: 18,
+  },
+  categoriesContainer: {
+    paddingHorizontal: 20,
+  },
+  contentContainerStyle: {
+    gap: 16,
+    paddingTop: 30,
+    paddingBottom: 20
   },
   taskListSection: {
     flex: 1,
@@ -122,7 +129,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 45,
     paddingHorizontal: 20,
     paddingTop: 18,
-    marginTop: 20,
   },
   taskListHeader: {
     flexDirection: 'row',
