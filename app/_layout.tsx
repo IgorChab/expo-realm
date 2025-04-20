@@ -3,11 +3,11 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { RealmProvider } from '@realm/react';
 import 'react-native-reanimated';
-import { Task } from "@/realm";
+import { Task, Category } from "@/realm";
 
 export default function RootLayout() {
   return (
-    <RealmProvider schema={[Task]} schemaVersion={5}>
+    <RealmProvider schema={[Task, Category]} schemaVersion={6}>
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />

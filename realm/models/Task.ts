@@ -11,6 +11,11 @@ export class Task extends Realm.Object {
       id: { type: 'uuid' },
       text: { type: 'string' },
       isCompleted: { type: 'bool' },
+      category: {
+        type: 'linkingObjects',
+        objectType: `Category`,
+        property: 'tasks'
+      }
     },
     primaryKey: 'id'
   }
