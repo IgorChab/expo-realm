@@ -1,8 +1,15 @@
-import React from "react";
-import {View, Text, StyleSheet, Pressable} from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useQuery } from "@realm/react";
+import { Task } from "@/realm";
+import { AddCategoryModal, AddTaskModal, Button } from "@/components";
 
 export default function HomeScreen() {
+  const [isVisibleAddTaskModal, setVisibleAddTaskModal] = useState(false);
+  const [isVisibleAddCategoryModal, setIsVisibleAddCategoryModal] = useState(false);
+  const tasks = useQuery(Task);
+
   return (
     <SafeAreaView style={styles.root}>
       <View style={styles.header}>
@@ -20,9 +27,7 @@ export default function HomeScreen() {
       <View style={styles.categoriesSection}>
         <View style={styles.categoriesHeader}>
           <Text style={styles.categoriesTitle}>Categories</Text>
-          <Pressable style={styles.addCategoryBtn}>
-            <Text style={styles.addCategoryText}>Add</Text>
-          </Pressable>
+          <Button title="Add" size="small" onPress={() => setIsVisibleAddCategoryModal(true)} />
         </View>
         <View>
           <Text>Categories will be here</Text>
@@ -31,14 +36,16 @@ export default function HomeScreen() {
       <View style={styles.taskListSection}>
         <View style={styles.taskListHeader}>
           <Text style={styles.taskListTitle}>Task List</Text>
-          <Pressable style={styles.addTaskBtn}>
-            <Text style={styles.addTaskText}>Add Task</Text>
-          </Pressable>
+          <Button title="Add Task" size="medium" onPress={() => setVisibleAddTaskModal(true)} />
         </View>
         <View>
-          <Text>TaskList will be here</Text>
+          {tasks.map((task) => (
+            <Text key={task.id}>{JSON.stringify(task)}</Text>
+          ))}
         </View>
       </View>
+      <AddTaskModal isVisible={isVisibleAddTaskModal} setIsVisible={setVisibleAddTaskModal} />
+      <AddCategoryModal isVisible={isVisibleAddCategoryModal} setIsVisible={setIsVisibleAddCategoryModal} />
     </SafeAreaView>
   )
 }
@@ -108,18 +115,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 18,
   },
-  addCategoryBtn: {
-    backgroundColor: '#242424',
-    borderRadius: 26,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  addCategoryText: {
-    fontFamily: 'Helvetica',
-    fontWeight: '700',
-    fontSize: 13,
-    color: '#FFFFFF',
-  },
   taskListSection: {
     flex: 1,
     backgroundColor: '#FAFAFA',
@@ -139,16 +134,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 18,
   },
-  addTaskBtn: {
-    backgroundColor: '#242424',
-    borderRadius: 100,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-  },
-  addTaskText: {
-    fontFamily: 'Helvetica',
-    fontWeight: '700',
-    fontSize: 12,
-    color: '#FFFFFF',
-  }
 })
