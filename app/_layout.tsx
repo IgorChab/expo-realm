@@ -7,7 +7,7 @@ import { Task, Category } from "@/realm";
 
 export default function RootLayout() {
   return (
-    <RealmProvider schema={[Task, Category]} schemaVersion={6}>
+    <RealmProvider schema={[Task, Category]} schemaVersion={7}>
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />

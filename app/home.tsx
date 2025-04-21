@@ -4,13 +4,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useRealm } from "@realm/react";
 import { Category, Task } from "@/realm";
 import { AddCategoryModal, AddTaskModal, Button, CategoryItem, TaskItem } from "@/components";
+import {Realm} from "realm";
 
 export default function HomeScreen() {
   const [isVisibleAddTaskModal, setVisibleAddTaskModal] = useState(false);
   const [isVisibleAddCategoryModal, setIsVisibleAddCategoryModal] = useState(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>();
+  const [selectedCategoryId, setSelectedCategoryId] = useState<Realm.BSON.UUID>();
   const realm = useRealm();
-  const tasks = useQuery(Task);
+  const tasks = useQuery({
+    type: Task,
+    query: (collection) => collection.filtered('category.id == $0', selectedCategoryId),
+  }, [selectedCategoryId]);
   const categories = useQuery(Category);
   
   const handleTaskComplete = (task: Task) => {
@@ -28,7 +32,11 @@ export default function HomeScreen() {
   }
   
   const selectCategory = (category: Category) => {
-    setSelectedCategoryId(category.id.toString())
+    if (selectedCategoryId?.toString() === category.id.toString()) {
+      setSelectedCategoryId(undefined);
+    } else {
+      setSelectedCategoryId(category.id)
+    }
   }
 
   return (
@@ -60,7 +68,7 @@ export default function HomeScreen() {
               key={category.id.toString()}
               category={category}
               selectCategory={selectCategory}
-              selected={selectedCategoryId === category.id.toString()}
+              selected={selectedCategoryId?.toString() === category.id.toString()}
             />
           ))}
         </ScrollView>
