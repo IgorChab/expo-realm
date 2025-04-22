@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useRealm } from "@realm/react";
 import { Category, Task } from "@/realm";
 import { AddCategoryModal, AddTaskModal, Button, CategoryItem, TaskItem } from "@/components";
-import {Realm} from "realm";
+import { Realm } from "realm";
 
 export default function HomeScreen() {
   const [isVisibleAddTaskModal, setVisibleAddTaskModal] = useState(false);

@@ -2,7 +2,8 @@ import React from 'react';
 import { Pressable, View, StyleSheet, Text } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { colorWithAlpha } from "@/helpers";
-import { Category } from "@/realm";
+import { Category, Task } from "@/realm";
+import { useQuery } from "@realm/react";
 
 interface CategoryItemProps {
   category: Category;
@@ -11,7 +12,12 @@ interface CategoryItemProps {
 }
 
 export const CategoryItem = ({ category, selected, selectCategory }: CategoryItemProps) => {
-  const { color, title, icon, tasks } = category
+  const { color, title, icon, id } = category
+  
+  const tasks = useQuery({
+    type: Task,
+    query: (collection) => collection.filtered('category.id == $0', id),
+  }, [id]);
   
   const getTasksCountLabel = () => {
     if (!tasks || tasks.length === 0) {
@@ -19,10 +25,10 @@ export const CategoryItem = ({ category, selected, selectCategory }: CategoryIte
     }
     
     if (tasks.length < 10) {
-      return `+$0${tasks.length} task`
+      return `+0${tasks.length} task`
     }
     
-    return `+$${tasks.length} task`
+    return `+${tasks.length} task`
   }
   
   return (
