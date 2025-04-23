@@ -1,20 +1,34 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useRealm } from "@realm/react";
 import { Category, Task } from "@/realm";
 import { AddCategoryModal, AddTaskModal, Button, CategoryItem, TaskItem } from "@/components";
 import { Realm } from "realm";
+import Animated, {interpolateColor, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
+
+const { width } = Dimensions.get("window");
+const TAB_SECTION_WIDTH = width - 40;
+const TAB_BUTTON_WIDTH = 145;
+const VALUE_TO_TRANSLATE = TAB_SECTION_WIDTH - TAB_BUTTON_WIDTH - 8;
 
 export default function HomeScreen() {
+  const translateX = useSharedValue(8);
   const [isVisibleAddTaskModal, setVisibleAddTaskModal] = useState(false);
   const [isVisibleAddCategoryModal, setIsVisibleAddCategoryModal] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<Realm.BSON.UUID>();
+  const [showOnlyCompleted, setShowOnlyCompleted] = useState(false);
   const realm = useRealm();
   const tasks = useQuery({
     type: Task,
-    query: (collection) => collection.filtered('category.id == $0', selectedCategoryId),
-  }, [selectedCategoryId]);
+    query: (collection) => {
+      if (showOnlyCompleted) {
+        return collection.filtered('category.id == $0 && isCompleted == true', selectedCategoryId)
+      } else {
+        return collection.filtered('category.id == $0', selectedCategoryId)
+      }
+    },
+  }, [selectedCategoryId, showOnlyCompleted]);
   const categories = useQuery(Category);
   
   const handleTaskComplete = (task: Task) => {
@@ -38,7 +52,40 @@ export default function HomeScreen() {
       setSelectedCategoryId(category.id)
     }
   }
+  
+  const showAllTasks = () => {
+    setShowOnlyCompleted(false);
+    translateX.value = 8
+  }
+  
+  const showOnlyCompletedTasks = () => {
+    setShowOnlyCompleted(true);
+    translateX.value = VALUE_TO_TRANSLATE
+  }
+  
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [{ translateX: withTiming(translateX.value) }]
+  }))
+  
+  const taskTextStyle = useAnimatedStyle(() => {
+    const color = interpolateColor(
+      translateX.value,
+      [8, VALUE_TO_TRANSLATE],
+      ['#242424', '#FFFFFF']
+    );
+    return { color: withTiming(color) };
+  });
 
+  const completedTextStyle = useAnimatedStyle(() => {
+    const color = interpolateColor(
+      translateX.value,
+      [8, VALUE_TO_TRANSLATE],
+      ['#FFFFFF', '#242424']
+    );
+    return { color: withTiming(color) };
+  });
+  
+  
   return (
     <SafeAreaView style={styles.root}>
       <View style={styles.header}>
@@ -46,11 +93,12 @@ export default function HomeScreen() {
         <View style={styles.avatar} />
       </View>
       <View style={styles.tabSection}>
-        <Pressable style={styles.tab}>
-          <Text style={styles.tabText}>Task List</Text>
+        <Animated.View style={[styles.tab, animatedStyles]} />
+        <Pressable style={styles.switchBtn} onPress={showAllTasks}>
+          <Animated.Text style={[styles.tabText, taskTextStyle]}>Task List</Animated.Text>
         </Pressable>
-        <Pressable style={styles.tab}>
-          <Text style={styles.tabText}>Completed</Text>
+        <Pressable style={styles.switchBtn} onPress={showOnlyCompletedTasks}>
+          <Animated.Text style={[styles.tabText, completedTextStyle]}>Completed</Animated.Text>
         </Pressable>
       </View>
       <View>
@@ -88,7 +136,7 @@ export default function HomeScreen() {
             <TaskItem task={task} key={task.id.toString()} handleTaskComplete={handleTaskComplete} />
           ))}
         </ScrollView>
-        {!tasks.isEmpty() && (
+        {!showOnlyCompleted && !tasks.isEmpty() && (
           <Button title='Select All Task' size='medium' onPress={completeAllTasks} style={styles.selectAllBtn} />
         )}
       </View>
@@ -125,8 +173,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    alignSelf: 'center',
-    marginHorizontal: 24,
+    marginHorizontal: 20,
+    width: TAB_SECTION_WIDTH,
     height: 60,
     backgroundColor: '#242424',
     borderRadius: 100,
@@ -136,13 +184,20 @@ const styles = StyleSheet.create({
     marginBottom: 21,
   },
   tab: {
-    width: 145,
+    width: TAB_BUTTON_WIDTH,
     height: 43,
     backgroundColor: '#FFFFFF',
+    borderRadius: 100,
+    position: 'absolute',
+  },
+  switchBtn: {
+    width: 145,
+    height: 43,
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 30,
+    zIndex: 1,
   },
   tabText: {
     fontFamily: 'Helvetica',
