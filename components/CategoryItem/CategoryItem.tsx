@@ -1,9 +1,9 @@
 import React from 'react';
-import { Pressable, View, StyleSheet, Text } from "react-native";
+import { Pressable, View, StyleSheet, Text, Alert } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { colorWithAlpha } from "@/helpers";
 import { Category, Task } from "@/realm";
-import { useQuery } from "@realm/react";
+import {useQuery, useRealm} from "@realm/react";
 
 interface CategoryItemProps {
   category: Category;
@@ -12,12 +12,9 @@ interface CategoryItemProps {
 }
 
 export const CategoryItem = ({ category, selected, selectCategory }: CategoryItemProps) => {
-  const { color, title, icon, id } = category
+  const { color, title, icon, tasks } = category
   
-  const tasks = useQuery({
-    type: Task,
-    query: (collection) => collection.filtered('category.id == $0', id),
-  }, [id]);
+  const realm = useRealm();
   
   const getTasksCountLabel = () => {
     if (!tasks || tasks.length === 0) {
@@ -31,10 +28,32 @@ export const CategoryItem = ({ category, selected, selectCategory }: CategoryIte
     return `+${tasks.length} task`
   }
   
+  const deleteCategory = () => {
+    realm.write(() => {
+      realm.delete(tasks)
+      realm.delete(category)
+    })
+  }
+  
+  const confirmDeleteCategory = () => {
+    Alert.alert('Deleting category', 'Do you really want to delete this category?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: deleteCategory
+      }
+    ])
+  }
+  
   return (
     <Pressable
       style={[styles.container, selected && styles.shadow, { shadowColor: color }]}
       onPress={() => selectCategory(category)}
+      onLongPress={confirmDeleteCategory}
     >
       <View style={[styles.innerContainer, { backgroundColor: colorWithAlpha(color, 0.2) }]}>
         <View style={[styles.iconContainer, styles.shadowIcon, { borderColor: color, shadowColor: color }]}>
