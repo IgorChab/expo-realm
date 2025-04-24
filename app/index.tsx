@@ -2,9 +2,14 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Link } from 'expo-router';
 import DecorativeSvg from '@/assets/svg/decorative.svg';
 import ArrowIcon from '@/assets/svg/arrowIcon.svg';
+import {mmkvStorage} from "@/storage";
 const { height } = Dimensions.get('window');
 
 export default function StartScreen() {
+  const onPressNext = () => {
+    mmkvStorage.setItem('isOnboardingPassed', true);
+  }
+  
   return (
     <View style={styles.container}>
       <DecorativeSvg style={styles.decarativeSvg} />
@@ -15,7 +20,7 @@ export default function StartScreen() {
         <Text style={styles.subtitle}>
           There are many variations of passagesThere are many variations.
         </Text>
-        <Link href='/home'>
+        <Link href='/home' onPress={onPressNext}>
           <View style={styles.btn}>
             <View style={styles.innerBtn}>
               <ArrowIcon />
