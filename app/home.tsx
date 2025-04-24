@@ -106,20 +106,26 @@ export default function HomeScreen() {
           <Text style={styles.categoriesTitle}>Categories</Text>
           <Button title="Add" size="small" onPress={() => setIsVisibleAddCategoryModal(true)} />
         </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.contentContainerStyle}
-        >
-          {categories.map((category) => (
-            <CategoryItem
-              key={category.id.toString()}
-              category={category}
-              selectCategory={selectCategory}
-              selected={selectedCategoryId?.toString() === category.id.toString()}
-            />
-          ))}
-        </ScrollView>
+        {categories.isEmpty() ? (
+          <View style={styles.categoriesPlaceholder}>
+            <Text>There will be categories here</Text>
+          </View>
+        ) : (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.contentContainerStyle}
+          >
+            {categories.map((category) => (
+              <CategoryItem
+                key={category.id.toString()}
+                category={category}
+                selectCategory={selectCategory}
+                selected={selectedCategoryId?.toString() === category.id.toString()}
+              />
+            ))}
+          </ScrollView>
+        )}
       </View>
       <View style={styles.taskListSection}>
         <View style={styles.taskListHeader}>
@@ -127,15 +133,19 @@ export default function HomeScreen() {
           <Button title="Add Task" size="medium" onPress={() => setVisibleAddTaskModal(true)} />
         </View>
         <View style={styles.divider} />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ paddingHorizontal: 20 }}
-          contentContainerStyle={{ gap: 16, paddingBottom: 20 }}
-        >
-          {tasks.map((task) => (
-            <TaskItem task={task} key={task.id.toString()} handleTaskComplete={handleTaskComplete} />
-          ))}
-        </ScrollView>
+        {tasks.isEmpty()
+          ? <Text style={{ textAlign: 'center' }}>There will be tasks here</Text>
+          : (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={{ paddingHorizontal: 20 }}
+              contentContainerStyle={{ gap: 16, paddingBottom: 20 }}
+            >
+              {tasks.map((task) => (
+                <TaskItem task={task} key={task.id.toString()} handleTaskComplete={handleTaskComplete} />
+              ))}
+            </ScrollView>
+          )}
         {!showOnlyCompleted && !tasks.isEmpty() && (
           <Button title='Select All Task' size='medium' onPress={completeAllTasks} style={styles.selectAllBtn} />
         )}
@@ -249,5 +259,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 16,
     alignSelf: 'center',
+  },
+  categoriesPlaceholder: {
+    height: 136,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 })
