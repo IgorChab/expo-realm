@@ -54,6 +54,14 @@
         "wasm",
         "svg"
       ]
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "95f7f4fa-66b2-4810-9825-9714c766a354"
+      }
     }
   }
 }

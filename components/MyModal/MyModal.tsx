@@ -13,14 +13,16 @@ export const MyModal = ({ children, setIsVisible, ...props }: MyModalProps) => {
   }
   
   return (
-    <Modal statusBarTranslucent onBackdropPress={closeModal} {...props}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <AntDesign name='close' size={24} color='#242424' style={styles.closeButton} onPress={closeModal} />
+    <View>
+      <Modal statusBarTranslucent onBackdropPress={closeModal} avoidKeyboard backdropTransitionOutTiming={0} {...props}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <AntDesign name='close' size={24} color='#242424' style={styles.closeButton} onPress={closeModal} />
+          </View>
+          {children}
         </View>
-        {children}
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   )
 }
 
