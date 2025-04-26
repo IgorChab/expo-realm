@@ -15,7 +15,11 @@ export const AddCategoryModal = ({ setIsVisible, ...props }: AddCategoryModalPro
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('');
   
+  const isDisabled = !categoryName || !selectedColor || !selectedIcon;
+  
   const createCategory = () => {
+    if (isDisabled) return
+    
     realm.write(() => {
       realm.create('Category', {
         id: new Realm.BSON.UUID(),
@@ -61,7 +65,13 @@ export const AddCategoryModal = ({ setIsVisible, ...props }: AddCategoryModalPro
           />
         ))}
       </View>
-      <Button title="Create Category" size="large" style={styles.button} onPress={createCategory} />
+      <Button
+        title="Create Category"
+        size="large"
+        style={[styles.button, isDisabled && { opacity: 0.5 }]}
+        onPress={createCategory}
+        disabled={isDisabled}
+      />
     </MyModal>
   )
 }
