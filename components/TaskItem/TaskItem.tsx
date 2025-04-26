@@ -51,6 +51,7 @@ export const TaskItem = ({ task, handleTaskComplete }: TaskItemProps) => {
     <Swipeable
       friction={2}
       renderRightActions={renderRightActions}
+      containerStyle={{ overflow: 'visible' }}
     >
       <Animated.View style={[styles.container, animatedStyles]}>
         <Text style={styles.title}>{task.text}</Text>
