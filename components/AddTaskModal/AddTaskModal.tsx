@@ -20,7 +20,11 @@ export const AddTaskModal = ({ setIsVisible, ...props }: AddTaskModalProps) => {
   const [category, setCategory] = useState<Category>();
   const popoverRef = useRef<Popover>(null);
   
+  const isDisabled = !text
+  
   const handleAddTask = () => {
+    if (isDisabled) return
+    
     realm.write(() => {
       realm.create<Task>('Task', { id: new Realm.BSON.UUID(), text, isCompleted: false, category });
     });
@@ -80,7 +84,13 @@ export const AddTaskModal = ({ setIsVisible, ...props }: AddTaskModalProps) => {
           </Popover>
         </View>
       )}
-      <Button title="Save" size="large" style={styles.button} onPress={handleAddTask} />
+      <Button
+        title="Save"
+        size="large"
+        style={[styles.button, isDisabled && { opacity: 0.5 }]}
+        onPress={handleAddTask}
+        disabled={isDisabled}
+      />
     </MyModal>
   )
 }
